@@ -3,10 +3,14 @@ var _ = require("lodash");
 /**
  * @constructor
  */
-var EasyExtender = function (defaults) {
-    this.plugins  = {};
+var EasyExtender = function (plugins, hooks) {
+
+    this.plugins        = {};
     this.pluginOptions  = {};
-    this.defaults = defaults;
+
+    this.hooks          = hooks;
+    this.defaultPlugins = plugins;
+
     return this;
 };
 
@@ -15,10 +19,10 @@ var EasyExtender = function (defaults) {
  */
 EasyExtender.prototype.init = function () {
 
-    var required = Object.keys(this.defaults);
+    var required = Object.keys(this.defaultPlugins);
     required.forEach(function (name) {
         if (_.isUndefined(this.plugins[name])) {
-            this.plugins[name] = this.defaults[name];
+            this.plugins[name] = this.defaultPlugins[name];
         }
     }, this);
 
@@ -32,7 +36,7 @@ EasyExtender.prototype.initUserPlugins = function () {
 
     var args = Array.prototype.slice.call(arguments);
 
-    var userPlugins = _.difference(Object.keys(this.plugins), Object.keys(this.defaults));
+    var userPlugins = _.difference(Object.keys(this.plugins), Object.keys(this.defaultPlugins));
 
     if (userPlugins.length) {
 
@@ -95,6 +99,29 @@ EasyExtender.prototype.registerPlugin = function (module, opts, cb) {
     }
 
     return this;
+};
+
+/**
+ * @param name
+ * @returns {*}
+ */
+EasyExtender.prototype.hook = function (name) {
+
+    // Get any extra args
+    var args  = Array.prototype.slice.call(arguments, 1);
+
+    // build a list of hook funcs
+    var funcs = [];
+
+    _.each(this.plugins, function (plugin) {
+        if (plugin.hooks) {
+            if (!_.isUndefined(plugin.hooks[name]) && _.isFunction(plugin.hooks[name])) {
+                funcs.push(plugin.hooks[name]);
+            }
+        }
+    });
+
+    return this.hooks[name].apply(this, [funcs].concat(args));
 };
 
 module.exports = EasyExtender;
