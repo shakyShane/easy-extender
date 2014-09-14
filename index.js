@@ -26,6 +26,31 @@ EasyExtender.prototype.init = function () {
 };
 
 /**
+ * Call the '.plugin()' method of all registered plugins
+ */
+EasyExtender.prototype.initUserPlugins = function () {
+
+    var args = Array.prototype.slice.call(arguments);
+
+    var userPlugins = _.difference(Object.keys(this.plugins), Object.keys(this.defaults));
+
+    if (userPlugins.length) {
+
+        userPlugins.forEach(function (plugin) {
+
+            var pluginOptions = {};
+
+            if (this.pluginOptions) {
+                pluginOptions = this.pluginOptions[plugin];
+            }
+
+            this.get(plugin).apply(null, [pluginOptions].concat(args));
+
+        }, this);
+    }
+};
+
+/**
  * @param {String} name
  * @returns {Function|Boolean}
  */
