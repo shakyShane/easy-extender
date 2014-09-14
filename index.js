@@ -115,7 +115,7 @@ EasyExtender.prototype.hook = function (name) {
 
     _.each(this.plugins, function (plugin) {
         if (plugin.hooks) {
-            if (!_.isUndefined(plugin.hooks[name]) && _.isFunction(plugin.hooks[name])) {
+            if (!_.isUndefined(plugin.hooks[name])) {
                 funcs.push(plugin.hooks[name]);
             }
         }

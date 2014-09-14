@@ -43,4 +43,40 @@ describe("Using default hooks", function(){
 
         assert.equal(out, "oh my god");
     });
+    it("can works with any primitive types", function(){
+
+        var defaults = {
+            "myplugin": {
+                plugin: function () {}
+            }
+        };
+
+        var hooks = {
+            "client:js": function (hooks, args2, args3) {
+                var out = args2 + args3;
+                hooks.forEach(function (hook) {
+                    out += hook;
+                });
+                return out;
+            }
+        };
+
+        var userModule = {
+            "plugin:name": "HTML",
+            "plugin": function () {},
+            hooks: {
+                "client:js": " god"
+            }
+        };
+
+        var plugins = new EE(defaults, hooks);
+
+        plugins.registerPlugin(userModule);
+
+        plugins.init();
+
+        var out = plugins.hook("client:js", "oh", " my");
+
+        assert.equal(out, "oh my god");
+    });
 });
