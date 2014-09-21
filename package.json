@@ -24,15 +24,19 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
-    "test": "gulp lint && mocha --recursive test --reporter spec"
+    "test": "gulp lint && mocha --recursive test --reporter spec",
+    "cover": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^2.4.1"
+  },
   "devDependencies": {
     "chai": "^1.9.1",
-    "sinon": "^1.10.3",
-    "gulp-jshint": "^1.8.4",
+    "coveralls": "^2.11.1",
     "gulp": "^3.8.8",
-    "mocha": "^1.21.4"
+    "gulp-jshint": "^1.8.4",
+    "mocha": "^1.21.4",
+    "sinon": "^1.10.3"
   },
   "keywords": [
     "plugins"

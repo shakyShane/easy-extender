@@ -101,4 +101,50 @@ describe("Using default plugins", function(){
         sinon.assert.called(userSpy);
         sinon.assert.notCalled(spy);
     });
+    it("warns about missing .plugin() method", function(done){
+
+        var spy     = sinon.spy();
+        var userSpy = sinon.spy();
+
+        var defaults = {
+            "myplugin": {
+                plugin: spy
+            }
+        };
+
+        var userPlugin = {
+            "plugin:name": "myplugin",
+            "main": userSpy
+        };
+
+        var plugins = new EE(defaults);
+
+        plugins.registerPlugin(userPlugin, {}, function (err) {
+            assert.equal(err, "Module must implement a .plugin() method");
+            done();
+        });
+    });
+    it("returns false if plugin does not exist", function(){
+
+        var defaults = {};
+
+        var plugins = new EE(defaults);
+
+        var actual = plugins.get("shane");
+        assert.isFalse(actual, false);
+    });
+    it("can add with modules + callback (no config)", function(done){
+
+        var defaults = {};
+        var userSpy = sinon.spy();
+
+        var plugins = new EE(defaults);
+
+        var userPlugin = {
+            "plugin:name": "myplugin",
+            "plugin": userSpy
+        };
+
+        plugins.registerPlugin(userPlugin, done); // success if callback called
+    });
 });
