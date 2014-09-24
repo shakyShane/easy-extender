@@ -60,8 +60,20 @@ EasyExtender.prototype.initUserPlugins = function () {
  */
 EasyExtender.prototype.get = function (name) {
 
-    if (!_.isUndefined(this.plugins[name])) {
-        return this.plugins[name].plugin || false;
+    var plugin = this.plugins[name];
+
+    if (!_.isUndefined(plugin)) {
+
+        if (plugin.called) {
+            return plugin._memo;
+        }
+
+        return function () {
+            var args  = Array.prototype.slice.call(arguments);
+            plugin.called = true;
+            plugin._memo  = plugin.plugin.apply(null, args);
+            return plugin._memo;
+        }
     }
 
     return false;

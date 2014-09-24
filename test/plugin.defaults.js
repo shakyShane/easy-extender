@@ -147,4 +147,41 @@ describe("Using default plugins", function(){
 
         plugins.registerPlugin(userPlugin, done); // success if callback called
     });
+    it("can add a module and extract returned result", function(){
+
+        var defaults = {};
+        var userSpy = sinon.spy(function () {
+            return "SHANE";
+        });
+
+        var plugins = new EE(defaults);
+
+        var userPlugin = {
+            "plugin:name": "myplugin",
+            "plugin": userSpy
+        };
+
+        plugins.registerPlugin(userPlugin); // success if callback called
+        var returned = plugins.get("myplugin")();
+        assert.equal(returned, "SHANE");
+    });
+    it("can start a module & retrieve the return value at a later date", function(){
+
+        var defaults = {};
+        var userSpy = sinon.spy(function (input) {
+            return input;
+        });
+
+        var plugins = new EE(defaults);
+
+        var userPlugin = {
+            "plugin:name": "myplugin",
+            "plugin": userSpy
+        };
+
+        plugins.registerPlugin(userPlugin); // success if callback called
+        var instance = plugins.get("myplugin")("input");
+        var later    = plugins.get("myplugin");
+        assert.equal(later, "input");
+    });
 });
