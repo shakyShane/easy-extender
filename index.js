@@ -19,12 +19,14 @@ var EasyExtender = function (plugins, hooks) {
  */
 EasyExtender.prototype.init = function () {
 
-    var required = Object.keys(this.defaultPlugins);
-    required.forEach(function (name) {
-        if (_.isUndefined(this.plugins[name])) {
-            this.plugins[name] = this.defaultPlugins[name];
-        }
-    }, this);
+    if (this.defaultPlugins) {
+        var required = Object.keys(this.defaultPlugins);
+        required.forEach(function (name) {
+            if (_.isUndefined(this.plugins[name])) {
+                this.plugins[name] = this.defaultPlugins[name];
+            }
+        }, this);
+    }
 
     return this;
 };
@@ -52,6 +54,20 @@ EasyExtender.prototype.initUserPlugins = function () {
 
         }, this);
     }
+};
+
+/**
+ * Wrap a module in East Extender pattern
+ * @param module
+ * @param localName
+ */
+EasyExtender.prototype.wrap = function (module, localName) {
+    this.registerPlugin({
+        "plugin:name": localName,
+        "plugin": function () {
+            return module;
+        }
+    });
 };
 
 /**
