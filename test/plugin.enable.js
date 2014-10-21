@@ -6,16 +6,11 @@ var assert = require("chai").assert;
 
 describe("Enable/Disable plugins on the fly", function(){
 
-    it.only("can disable a registered plugin", function(){
+    it("can disable a plugin & enable after initUserPlugins", function(){
 
-        var defaultSpy = sinon.spy();
         var userSpy    = sinon.spy();
 
-        var defaults = {
-            "myplugin": {
-                plugin: defaultSpy
-            }
-        };
+        var defaults = {};
 
         var userPlugin = {
             "plugin:name": "HTML",
@@ -25,10 +20,40 @@ describe("Enable/Disable plugins on the fly", function(){
         var plugins = new EE(defaults);
 
         plugins.registerPlugin(userPlugin);
+        
         plugins.init();
 
+        assert.isFalse(plugins.plugins["HTML"]._enabled);
+        
         plugins.initUserPlugins({});
 
-        console.log(plugins.plugins["HTML"]);
+        assert.isTrue(plugins.plugins["HTML"]._enabled);
+    });
+    it("can enable a plugin separately", function(){
+
+        var userSpy    = sinon.spy();
+
+        var defaults = {};
+
+        var userPlugin = {
+            "plugin:name": "HTML",
+            "plugin": userSpy
+        };
+
+        var plugins = new EE(defaults);
+
+        plugins.registerPlugin(userPlugin);
+        
+        plugins.init();
+        
+        assert.isFalse(plugins.getPlugin("HTML")._enabled);
+        
+        plugins.enablePlugin("HTML");
+        
+        assert.isTrue(plugins.getPlugin("HTML")._enabled);
+        
+        plugins.disablePlugin("HTML");
+        
+        assert.isFalse(plugins.getPlugin("HTML")._enabled);
     });
 });

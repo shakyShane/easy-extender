@@ -51,6 +51,7 @@ EasyExtender.prototype.initUserPlugins = function () {
             }
 
             this.get(plugin).apply(null, [pluginOptions].concat(args));
+            this.enablePlugin(plugin);
 
         }, this);
     }
@@ -103,7 +104,7 @@ EasyExtender.prototype.registerPlugin = function (module, opts, cb) {
             pluginOptions = opts;
         }
     }
-
+    
     var name = _.isUndefined(module["plugin:name"]) ? _.uniqueId() : module["plugin:name"];
 
     this.pluginOptions[name] = pluginOptions;
@@ -113,8 +114,50 @@ EasyExtender.prototype.registerPlugin = function (module, opts, cb) {
     if (_.isFunction(cb)) {
         cb(null);
     }
+    
+    this.disablePlugin(name);
 
     return this;
+};
+
+/**
+ * 
+ * @param name
+ */
+EasyExtender.prototype.getPlugin = function (module) {
+    
+    if (_.isString(module)) {
+        module = this.plugins[module];
+    }
+    
+    if (!module) {
+        return false;
+    }
+    
+    return module;
+};
+
+/**
+ *
+ * @param name
+ */
+EasyExtender.prototype.disablePlugin = function (module) {
+
+    module = this.getPlugin(module);
+    module._enabled = false;
+
+    return module;
+};
+
+/**
+ * @param name
+ */
+EasyExtender.prototype.enablePlugin = function (module) {
+    
+    module = this.getPlugin(module);
+    module._enabled = true;
+    
+    return module;
 };
 
 /**
