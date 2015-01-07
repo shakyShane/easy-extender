@@ -20,11 +20,11 @@ describe("Enable/Disable plugins on the fly", function(){
         var plugins = new EE(defaults);
 
         plugins.registerPlugin(userPlugin);
-        
+
         plugins.init();
 
         assert.isFalse(plugins.plugins["HTML"]._enabled);
-        
+
         plugins.initUserPlugins({});
 
         assert.isTrue(plugins.plugins["HTML"]._enabled);
@@ -43,17 +43,17 @@ describe("Enable/Disable plugins on the fly", function(){
         var plugins = new EE(defaults);
 
         plugins.registerPlugin(userPlugin);
-        
+
         plugins.init();
-        
+
         assert.isFalse(plugins.getPlugin("HTML")._enabled);
-        
+
         plugins.enablePlugin("HTML");
-        
+
         assert.isTrue(plugins.getPlugin("HTML")._enabled);
-        
+
         plugins.disablePlugin("HTML");
-        
+
         assert.isFalse(plugins.getPlugin("HTML")._enabled);
     });
 });
