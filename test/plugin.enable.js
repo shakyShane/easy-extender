@@ -56,4 +56,44 @@ describe("Enable/Disable plugins on the fly", function(){
 
         assert.isFalse(plugins.getPlugin("HTML")._enabled);
     });
+    it("can disable when given in options", function(){
+
+        var userSpy    = sinon.spy();
+
+        var defaults = {};
+
+        var userPlugin = {
+            "plugin:name": "HTML",
+            "plugin": userSpy
+        };
+
+        var plugins = new EE(defaults);
+
+        plugins.registerPlugin(userPlugin, {enabled: false});
+
+        plugins.init();
+        plugins.initUserPlugins();
+
+        assert.isFalse(plugins.getPlugin("HTML")._enabled);
+    });
+    it("can enable when given in options", function(){
+
+        var userSpy    = sinon.spy();
+
+        var defaults = {};
+
+        var userPlugin = {
+            "plugin:name": "HTML",
+            "plugin": userSpy
+        };
+
+        var plugins = new EE(defaults);
+
+        plugins.registerPlugin(userPlugin, {enabled: true});
+
+        plugins.init();
+        plugins.initUserPlugins();
+
+        assert.isTrue(plugins.getPlugin("HTML")._enabled);
+    });
 });
